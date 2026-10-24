@@ -60,6 +60,7 @@ npm run build
 * Kalau total tidak habis dibagi (misal 3 orang), selisih 1 sen diberikan ke orang dengan sisa pembagian terbesar. Hasilnya jumlah angka persis semua orang selalu tepat sama dengan total struk.
 * Pembulatan "Tidak" berarti dibulatkan ke atas ke rupiah penuh, karena rupiah tidak punya sen dalam praktik.
 * Input rupiah: titik, koma, spasi, dan awalan "Rp" diterima sebagai pemisah ribuan. Persen menerima desimal koma atau titik, maksimal 2 angka di belakang koma.
+* Kolom rupiah diberi titik ribuan otomatis saat mengetik, posisi kursor tetap.
 * Kolom persen yang kosong dianggap 0%. Nama yang kosong diganti "Orang 1", "Orang 2", dan seterusnya.
 
 ## Ide berikutnya
