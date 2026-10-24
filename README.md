@@ -12,7 +12,9 @@ Dibuat dengan Next.js (App Router) dan siap di-deploy ke Vercel. Tanpa backend: 
 | `app/Kalkulator.js` | Tampilan form dan hasil (client component) |
 | `app/page.js`, `app/layout.js` | Halaman dan kerangka HTML |
 | `app/globals.css` | Gaya, termasuk tema terang/gelap mengikuti setelan HP |
-| `tests/patungan.test.js` | Tes logika |
+| `lib/tes.js` | Daftar tes logika, dipakai `npm test` dan halaman `/tes` |
+| `app/tes/` | Halaman `/tes` yang menjalankan tes di browser |
+| `tests/patungan.test.js` | Runner tes untuk Node |
 
 ## Jalankan di komputer
 
@@ -26,6 +28,13 @@ npm run dev
 Buka `http://localhost:3000`. Untuk mencoba dari HP di Wi-Fi yang sama, jalankan `npm run dev -- -H 0.0.0.0` lalu buka `http://<IP-laptop>:3000`.
 
 ## Tes
+
+Panduan lengkap untuk tes manual ada di [PANDUAN-TES.md](PANDUAN-TES.md).
+
+Tes otomatis bisa dijalankan dua cara, isinya sama (`lib/tes.js`):
+
+* Di browser: buka halaman `/tes` di aplikasi yang sudah di-deploy.
+* Di komputer:
 
 ```
 npm test
