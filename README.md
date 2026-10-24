@@ -2,19 +2,48 @@
 
 Bagi tagihan makan bareng secara adil dalam 10 detik, langsung dari HP. Spesifikasi lengkap ada di [BRIEF.md](BRIEF.md).
 
-## Pakai
+Dibuat dengan Next.js (App Router) dan siap di-deploy ke Vercel. Tanpa backend: halaman di-render statis dan semua hitungan jalan di browser.
 
-Buka `index.html` di browser (HP atau laptop). Tidak perlu instal, build, atau internet.
+## Struktur
 
-Untuk GitHub Pages: Settings > Pages > Deploy from a branch, pilih branch dan folder root. Aplikasinya ada di `https://<user>.github.io/<repo>/`.
+| File | Isi |
+|---|---|
+| `lib/patungan.js` | Logika hitung murni (tanpa React/DOM): parsing input, validasi, hitung, format rupiah, teks salin |
+| `app/Kalkulator.js` | Tampilan form dan hasil (client component) |
+| `app/page.js`, `app/layout.js` | Halaman dan kerangka HTML |
+| `app/globals.css` | Gaya, termasuk tema terang/gelap mengikuti setelan HP |
+| `tests/patungan.test.js` | Tes logika |
+
+## Jalankan di komputer
+
+Butuh Node.js 20.9 atau lebih baru.
+
+```
+npm install
+npm run dev
+```
+
+Buka `http://localhost:3000`. Untuk mencoba dari HP di Wi-Fi yang sama, jalankan `npm run dev -- -H 0.0.0.0` lalu buka `http://<IP-laptop>:3000`.
 
 ## Tes
 
 ```
-node tests.js
+npm test
 ```
 
-Skrip mengambil `<script id="logika">` dari `index.html`, jadi yang dites adalah kode yang sama dengan yang dipakai aplikasi. Isinya: contoh uji BRIEF.md, aturan hitung, keempat pilihan pembulatan, 2.000 kasus acak (jumlah angka persis selalu sama dengan total struk), format input, dan semua kasus error.
+Isinya: contoh uji BRIEF.md, aturan hitung, keempat pilihan pembulatan, 2.000 kasus acak (jumlah angka persis selalu sama dengan total struk), format input, dan semua kasus error. Hasil yang benar: `48 lulus, 0 gagal`.
+
+Cek build produksi (sama dengan yang dijalankan Vercel):
+
+```
+npm run build
+```
+
+## Deploy ke Vercel
+
+1. Masuk ke vercel.com, pilih **Add New > Project**, lalu import repo ini.
+2. Framework terdeteksi otomatis sebagai Next.js. Tidak perlu environment variable.
+3. Klik **Deploy**. Setiap push ke `main` otomatis di-deploy ulang, dan setiap pull request dapat link preview sendiri.
 
 ## Keputusan yang diambil
 

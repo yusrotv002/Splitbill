@@ -1,15 +1,5 @@
-// Jalankan: node tests.js
-// Mengambil <script id="logika"> dari index.html supaya yang dites adalah kode yang sama dengan aplikasi.
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-
-const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-const m = /<script id="logika">([\s\S]*?)<\/script>/.exec(html);
-if (!m) throw new Error('<script id="logika"> tidak ditemukan di index.html');
-const ctx = { module: {} };
-vm.runInNewContext(m[1], ctx);
-const P = ctx.module.exports;
+// Jalankan: npm test
+import * as P from '../lib/patungan.js';
 
 let lulus = 0;
 let gagal = 0;
