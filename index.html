@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Patungan Adil</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --card: #ffffff;
+    --text: #1d1d1b;
+    --muted: #6b6a66;
+    --line: #dcdad4;
+    --input: #ffffff;
+    --accent: #0f7a5c;
+    --accent-text: #ffffff;
+    --accent-soft: #e3f3ed;
+    --error: #b42318;
+    --error-soft: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413;
+      --card: #1f1f1d;
+      --text: #f0efea;
+      --muted: #a3a29c;
+      --line: #3a3936;
+      --input: #262624;
+      --accent: #3fbf93;
+      --accent-text: #0b1f18;
+      --accent-soft: #17332a;
+      --error: #ff8a80;
+      --error-soft: #3a1f1d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 16px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 8px 0 2px; }
+  .tagline { margin: 0 0 16px; color: var(--muted); }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  h2 { font-size: 1rem; margin: 0 0 10px; }
+  label { display: block; font-size: .875rem; color: var(--muted); margin-bottom: 4px; }
+  input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--input);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  input[aria-invalid="true"] { border-color: var(--error); }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .prefix-wrap { position: relative; }
+  .prefix-wrap span {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); pointer-events: none;
+  }
+  .prefix-wrap input { padding-left: 38px; }
+  .suffix-wrap { position: relative; }
+  .suffix-wrap span {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); pointer-events: none;
+  }
+  .suffix-wrap input { padding-right: 28px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; border: 0; padding: 0; margin: 0; }
+  .seg legend { font-size: .875rem; color: var(--muted); margin-bottom: 4px; padding: 0; }
+  .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .seg label {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 44px; margin: 0; padding: 0 4px;
+    font-size: .875rem; color: var(--text); text-align: center;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--input);
+    cursor: pointer;
+  }
+  .seg input:checked + label { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .orang-head, .orang-row {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 9.5rem) 44px; gap: 8px; align-items: center;
+  }
+  .orang-head { font-size: .8125rem; color: var(--muted); margin-bottom: 4px; }
+  .orang-row { margin-bottom: 8px; }
+  button {
+    font: inherit; min-height: 44px; min-width: 44px; border-radius: 10px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--input); color: var(--text);
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hapus { font-size: 1.25rem; line-height: 1; padding: 0; color: var(--muted); }
+  .tambah { width: 100%; border-style: dashed; color: var(--accent); font-weight: 600; }
+  .hint { font-size: .8125rem; color: var(--muted); margin: 8px 0 0; }
+  .errors {
+    background: var(--error-soft); color: var(--error);
+    border: 1px solid var(--error); border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 14px;
+  }
+  .errors strong { display: block; margin-bottom: 4px; }
+  .errors ul { margin: 0; padding-left: 20px; }
+  .orang-hasil { list-style: none; margin: 0 0 12px; padding: 0; }
+  .orang-hasil li {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--line);
+  }
+  .orang-hasil li:last-child { border-bottom: 0; }
+  .nama { font-weight: 600; overflow-wrap: anywhere; }
+  .rinci { display: block; font-size: .8125rem; color: var(--muted); font-weight: 400; }
+  .bayar { text-align: right; white-space: nowrap; }
+  .bayar b { font-size: 1.125rem; color: var(--accent); }
+  .persis { display: block; font-size: .8125rem; color: var(--muted); }
+  .ringkas { width: 100%; border-collapse: collapse; font-size: .9375rem; margin-bottom: 12px; }
+  .ringkas td { padding: 4px 0; }
+  .ringkas td:last-child { text-align: right; white-space: nowrap; }
+  .ringkas tr.tebal td { font-weight: 700; border-top: 1px solid var(--line); padding-top: 8px; }
+  .sisa { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: .9375rem; margin-bottom: 12px; }
+  .salin { width: 100%; background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 700; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Patungan Adil</h1>
+  <p class="tagline">Bagi tagihan makan bareng, adil sesuai pesanan.</p>
+
+  <section>
+    <h2>Struk</h2>
+    <div class="field">
+      <label for="subtotal">Subtotal struk (sebelum pajak)</label>
+      <div class="prefix-wrap"><span>Rp</span>
+        <input type="text" id="subtotal" inputmode="numeric" autocomplete="off" placeholder="385.000">
+      </div>
+    </div>
+    <div class="field grid3">
+      <div>
+        <label for="service">Service</label>
+        <div class="suffix-wrap"><input type="text" id="service" inputmode="decimal" autocomplete="off" placeholder="0"><span>%</span></div>
+      </div>
+      <div>
+        <label for="pb1">PB1/Pajak</label>
+        <div class="suffix-wrap"><input type="text" id="pb1" inputmode="decimal" autocomplete="off" placeholder="0"><span>%</span></div>
+      </div>
+      <div>
+        <label for="tip">Tip</label>
+        <div class="suffix-wrap"><input type="text" id="tip" inputmode="decimal" autocomplete="off" placeholder="0"><span>%</span></div>
+      </div>
+    </div>
+    <fieldset class="field seg" id="pembulatan">
+      <legend>Bulatkan ke atas</legend>
+      <input type="radio" name="bulat" id="bulat0" value="0"><label for="bulat0">Tidak</label>
+      <input type="radio" name="bulat" id="bulat500" value="500"><label for="bulat500">Rp 500</label>
+      <input type="radio" name="bulat" id="bulat1000" value="1000" checked><label for="bulat1000">Rp 1.000</label>
+      <input type="radio" name="bulat" id="bulat5000" value="5000"><label for="bulat5000">Rp 5.000</label>
+    </fieldset>
+  </section>
+
+  <section>
+    <h2>Orang</h2>
+    <div class="orang-head"><span>Nama</span><span>Pesanan pribadi</span><span></span></div>
+    <div id="daftar-orang"></div>
+    <button type="button" class="tambah" id="tambah">+ Tambah orang</button>
+    <p class="hint">Pesanan pribadi boleh dikosongkan. Sisa subtotal dianggap menu sharing dan dibagi rata.</p>
+  </section>
+
+  <div class="errors" id="errors" role="alert" hidden>
+    <strong>Hasil belum bisa dihitung:</strong>
+    <ul id="error-list"></ul>
+  </div>
+
+  <section id="hasil" hidden aria-live="polite">
+    <h2>Hasil</h2>
+    <ul class="orang-hasil" id="hasil-orang"></ul>
+    <table class="ringkas"><tbody id="ringkasan"></tbody></table>
+    <div class="sisa" id="sisa"></div>
+    <button type="button" class="salin" id="salin">Salin hasil</button>
+  </section>
+</main>
+
+<script id="logika">
+// Logika hitung murni (tanpa DOM). Semua uang dihitung dalam sen (BigInt) supaya tidak ada error pembulatan float.
+const Patungan = (function () {
+  const PEMBULATAN = [0, 500, 1000, 5000];
+  const BATAS_RUPIAH = 1e12;
+
+  function parseRupiah(teks, label) {
+    let s = String(teks == null ? '' : teks).trim();
+    if (s === '') return { kosong: true, nilai: 0 };
+    s = s.replace(/^rp\.?\s*/i, '');
+    if (/^[-−]/.test(s)) return { error: label + ' tidak boleh negatif.' };
+    if (!/^[\d.,\s]+$/.test(s) || !/\d/.test(s)) return { error: label + ' hanya boleh berisi angka.' };
+    const nilai = Number(s.replace(/[.,\s]/g, ''));
+    if (nilai > BATAS_RUPIAH) return { error: label + ' terlalu besar.' };
+    return { nilai: nilai };
+  }
+
+  // Hasil dalam per-seratus persen (2,5% -> 250) supaya bisa dihitung sebagai bilangan bulat.
+  function parsePersen(teks, label) {
+    let s = String(teks == null ? '' : teks).trim().replace(/\s*%$/, '');
+    if (s === '') return { kosong: true, nilai: 0 };
+    if (/^[-−]/.test(s)) return { error: label + ' tidak boleh negatif.' };
+    const m = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(s);
+    if (!m) return { error: label + ' hanya boleh berisi angka persen, contoh 10 atau 2,5.' };
+    const nilai = Number(m[1]) * 100 + Number((m[2] || '').padEnd(2, '0'));
+    if (nilai > 10000) return { error: label + ' tidak boleh lebih dari 100%.' };
+    return { nilai: nilai };
+  }
+
+  function persenDari(sen, perSeratusPersen) {
+    // Pembulatan setengah ke atas ke sen terdekat.
+    return (sen * BigInt(perSeratusPersen) + 5000n) / 10000n;
+  }
+
+  function hitung(input) {
+    const errors = [];
+    const sub = parseRupiah(input.subtotal, 'Subtotal struk');
+    if (sub.error) errors.push(sub.error);
+    else if (sub.kosong) errors.push('Subtotal struk belum diisi.');
+    else if (sub.nilai === 0) errors.push('Subtotal struk harus lebih dari Rp 0.');
+
+    const persen = {};
+    [['service', 'Service'], ['pb1', 'PB1/Pajak'], ['tip', 'Tip']].forEach(function (p) {
+      const r = parsePersen(input[p[0]], p[1]);
+      if (r.error) errors.push(r.error);
+      persen[p[0]] = r.nilai || 0;
+    });
+
+    const step = Number(input.pembulatan) || 0;
+    if (PEMBULATAN.indexOf(step) === -1) errors.push('Pilihan pembulatan tidak dikenal.');
+
+    const orang = (input.orang || []).map(function (o, i) {
+      const nama = String(o.nama || '').trim() || 'Orang ' + (i + 1);
+      const r = parseRupiah(o.pesanan, 'Pesanan pribadi ' + nama);
+      if (r.error) errors.push(r.error);
+      return { nama: nama, pribadi: r.nilai || 0 };
+    });
+    if (orang.length === 0) errors.push('Belum ada orang. Tambahkan minimal satu orang.');
+
+    const totalPribadi = orang.reduce(function (a, o) { return a + o.pribadi; }, 0);
+    if (errors.length === 0 && totalPribadi > sub.nilai) {
+      errors.push('Total pesanan pribadi (' + formatRupiah(totalPribadi * 100) +
+        ') melebihi subtotal (' + formatRupiah(sub.nilai * 100) + ').');
+    }
+    if (errors.length) return { ok: false, errors: errors };
+
+    const n = BigInt(orang.length);
+    const subtotalSen = BigInt(sub.nilai) * 100n;
+    const serviceSen = persenDari(subtotalSen, persen.service);
+    const pb1Sen = persenDari(subtotalSen + serviceSen, persen.pb1);
+    const tipSen = persenDari(subtotalSen, persen.tip);
+    const totalSen = subtotalSen + serviceSen + pb1Sen + tipSen;
+    const sharing = sub.nilai - totalPribadi;
+
+    // Bobot tiap orang = (pribadi + sharing/n) dikali n, supaya tetap bilangan bulat.
+    // Total struk dibagi sesuai bobot; sisa sen dibagi ke sisa pembagian terbesar,
+    // jadi jumlah angka persis semua orang selalu sama dengan total struk.
+    const W = BigInt(sub.nilai) * n;
+    const bagian = orang.map(function (o, i) {
+      const w = BigInt(o.pribadi) * n + BigInt(sharing);
+      const kali = totalSen * w;
+      return { i: i, sen: kali / W, sisa: kali % W };
+    });
+    let kurang = totalSen - bagian.reduce(function (a, b) { return a + b.sen; }, 0n);
+    bagian.slice().sort(function (a, b) {
+      return a.sisa === b.sisa ? a.i - b.i : (a.sisa > b.sisa ? -1 : 1);
+    }).forEach(function (b) {
+      if (kurang > 0n) { b.sen += 1n; kurang -= 1n; }
+    });
+
+    const stepSen = BigInt((step || 1) * 100);
+    let totalBayarSen = 0n;
+    const hasilOrang = orang.map(function (o, i) {
+      const persis = bagian[i].sen;
+      const bayar = (persis + stepSen - 1n) / stepSen * stepSen;
+      totalBayarSen += bayar;
+      return {
+        nama: o.nama,
+        pribadi: o.pribadi,
+        persisSen: Number(persis),
+        bayar: Number(bayar / 100n)
+      };
+    });
+
+    return {
+      ok: true,
+      subtotal: sub.nilai,
+      persen: { service: persen.service / 100, pb1: persen.pb1 / 100, tip: persen.tip / 100 },
+      serviceSen: Number(serviceSen),
+      pb1Sen: Number(pb1Sen),
+      tipSen: Number(tipSen),
+      totalSen: Number(totalSen),
+      faktor: Number(totalSen) / Number(subtotalSen),
+      sharing: sharing,
+      sharingPerOrangSen: Math.round(sharing * 100 / orang.length),
+      pembulatan: step,
+      orang: hasilOrang,
+      totalBayar: Number(totalBayarSen / 100n),
+      sisaPembulatanSen: Number(totalBayarSen - totalSen)
+    };
+  }
+
+  function ribuan(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  // Terima nilai dalam sen. Desimal hanya ditampilkan kalau ada sen.
+  function formatRupiah(sen) {
+    const s = Math.round(sen);
+    const rp = Math.floor(s / 100);
+    const c = s % 100;
+    return 'Rp ' + ribuan(rp) + (c ? ',' + String(c).padStart(2, '0') : '');
+  }
+
+  function formatAngka(x, maksDesimal) {
+    return x.toFixed(maksDesimal).replace(/\.?0+$/, '').replace('.', ',');
+  }
+
+  function teksSalin(h) {
+    const baris = [
+      'Patungan Adil',
+      'Total struk ' + formatRupiah(h.totalSen) + ' (subtotal ' + formatRupiah(h.subtotal * 100) +
+        ', service ' + formatAngka(h.persen.service, 2) + '%, PB1 ' + formatAngka(h.persen.pb1, 2) +
+        '%, tip ' + formatAngka(h.persen.tip, 2) + '%)',
+      ''
+    ];
+    h.orang.forEach(function (o) {
+      baris.push('- ' + o.nama + ': ' + formatRupiah(o.bayar * 100) + ' (persis ' + formatRupiah(o.persisSen) + ')');
+    });
+    baris.push('');
+    baris.push('Total dibayar ' + formatRupiah(h.totalBayar * 100) + ', sisa pembulatan ' + formatRupiah(h.sisaPembulatanSen));
+    return baris.join('\n');
+  }
+
+  return {
+    parseRupiah: parseRupiah,
+    parsePersen: parsePersen,
+    hitung: hitung,
+    formatRupiah: formatRupiah,
+    formatAngka: formatAngka,
+    teksSalin: teksSalin
+  };
+})();
+if (typeof module !== 'undefined') module.exports = Patungan;
+</script>
+
+<script>
+(function () {
+  const $ = function (id) { return document.getElementById(id); };
+  const daftar = $('daftar-orang');
+  let hasilTerakhir = null;
+
+  function tambahOrang(nama, pesanan) {
+    const row = document.createElement('div');
+    row.className = 'orang-row';
+    const urut = daftar.children.length + 1;
+
+    const inNama = document.createElement('input');
+    inNama.type = 'text';
+    inNama.className = 'nama-orang';
+    inNama.placeholder = 'Orang ' + urut;
+    inNama.autocomplete = 'off';
+    inNama.setAttribute('aria-label', 'Nama orang ' + urut);
+    inNama.value = nama || '';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'prefix-wrap';
+    wrap.innerHTML = '<span>Rp</span>';
+    const inPesanan = document.createElement('input');
+    inPesanan.type = 'text';
+    inPesanan.className = 'pesanan-orang';
+    inPesanan.inputMode = 'numeric';
+    inPesanan.placeholder = '0';
+    inPesanan.autocomplete = 'off';
+    inPesanan.setAttribute('aria-label', 'Pesanan pribadi orang ' + urut);
+    inPesanan.value = pesanan || '';
+    wrap.appendChild(inPesanan);
+
+    const hapus = document.createElement('button');
+    hapus.type = 'button';
+    hapus.className = 'hapus';
+    hapus.textContent = '×';
+    hapus.setAttribute('aria-label', 'Hapus orang ' + urut);
+    hapus.addEventListener('click', function () {
+      row.remove();
+      perbaruiPlaceholder();
+      hitungUlang();
+    });
+
+    row.append(inNama, wrap, hapus);
+    daftar.appendChild(row);
+    return inNama;
+  }
+
+  function perbaruiPlaceholder() {
+    Array.prototype.forEach.call(daftar.children, function (row, i) {
+      const n = i + 1;
+      row.querySelector('.nama-orang').placeholder = 'Orang ' + n;
+      row.querySelector('.nama-orang').setAttribute('aria-label', 'Nama orang ' + n);
+      row.querySelector('.pesanan-orang').setAttribute('aria-label', 'Pesanan pribadi orang ' + n);
+      row.querySelector('.hapus').setAttribute('aria-label', 'Hapus orang ' + n);
+    });
+  }
+
+  function bacaInput() {
+    return {
+      subtotal: $('subtotal').value,
+      service: $('service').value,
+      pb1: $('pb1').value,
+      tip: $('tip').value,
+      pembulatan: document.querySelector('input[name="bulat"]:checked').value,
+      orang: Array.prototype.map.call(daftar.children, function (row) {
+        return { nama: row.querySelector('.nama-orang').value, pesanan: row.querySelector('.pesanan-orang').value };
+      })
+    };
+  }
+
+  function tandaiInvalid() {
+    const P = Patungan;
+    $('subtotal').setAttribute('aria-invalid', String(!!P.parseRupiah($('subtotal').value, '').error));
+    ['service', 'pb1', 'tip'].forEach(function (id) {
+      const r = P.parsePersen($(id).value, '');
+      $(id).setAttribute('aria-invalid', String(!!r.error));
+    });
+    daftar.querySelectorAll('.pesanan-orang').forEach(function (el) {
+      el.setAttribute('aria-invalid', String(!!P.parseRupiah(el.value, '').error));
+    });
+  }
+
+  function barisRingkas(label, nilai, tebal) {
+    const tr = document.createElement('tr');
+    if (tebal) tr.className = 'tebal';
+    const a = document.createElement('td');
+    const b = document.createElement('td');
+    a.textContent = label;
+    b.textContent = nilai;
+    tr.append(a, b);
+    return tr;
+  }
+
+  function hitungUlang() {
+    const P = Patungan;
+    const h = P.hitung(bacaInput());
+    tandaiInvalid();
+    hasilTerakhir = h.ok ? h : null;
+
+    if (!h.ok) {
+      const ul = $('error-list');
+      ul.textContent = '';
+      h.errors.forEach(function (e) {
+        const li = document.createElement('li');
+        li.textContent = e;
+        ul.appendChild(li);
+      });
+      $('errors').hidden = false;
+      $('hasil').hidden = true;
+      return;
+    }
+
+    $('errors').hidden = true;
+    $('hasil').hidden = false;
+
+    const ul = $('hasil-orang');
+    ul.textContent = '';
+    h.orang.forEach(function (o) {
+      const li = document.createElement('li');
+      const kiri = document.createElement('span');
+      kiri.className = 'nama';
+      kiri.textContent = o.nama;
+      const rinci = document.createElement('span');
+      rinci.className = 'rinci';
+      rinci.textContent = 'Pribadi ' + P.formatRupiah(o.pribadi * 100) + ' + sharing ' + P.formatRupiah(h.sharingPerOrangSen);
+      kiri.appendChild(rinci);
+      const kanan = document.createElement('span');
+      kanan.className = 'bayar';
+      const b = document.createElement('b');
+      b.textContent = P.formatRupiah(o.bayar * 100);
+      const persis = document.createElement('span');
+      persis.className = 'persis';
+      persis.textContent = 'persis ' + P.formatRupiah(o.persisSen);
+      kanan.append(b, persis);
+      li.append(kiri, kanan);
+      ul.appendChild(li);
+    });
+
+    const tb = $('ringkasan');
+    tb.textContent = '';
+    tb.append(
+      barisRingkas('Subtotal', P.formatRupiah(h.subtotal * 100)),
+      barisRingkas('Service ' + P.formatAngka(h.persen.service, 2) + '%', P.formatRupiah(h.serviceSen)),
+      barisRingkas('PB1 ' + P.formatAngka(h.persen.pb1, 2) + '%', P.formatRupiah(h.pb1Sen)),
+      barisRingkas('Tip ' + P.formatAngka(h.persen.tip, 2) + '%', P.formatRupiah(h.tipSen)),
+      barisRingkas('Total struk', P.formatRupiah(h.totalSen), true),
+      barisRingkas('Faktor pengali', P.formatAngka(h.faktor, 4)),
+      barisRingkas('Menu sharing', P.formatRupiah(h.sharing * 100) + ' (' + P.formatRupiah(h.sharingPerOrangSen) + '/orang)')
+    );
+
+    $('sisa').textContent = 'Total dibayar ' + P.formatRupiah(h.totalBayar * 100) +
+      '. Sisa pembulatan ' + P.formatRupiah(h.sisaPembulatanSen) +
+      (h.sisaPembulatanSen > 0 ? ' (lebih dari total struk, bisa jadi tip atau kembalian).' : '.');
+  }
+
+  function rapikanRupiah(el) {
+    const r = Patungan.parseRupiah(el.value, '');
+    if (!r.error && !r.kosong) el.value = String(r.nilai).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  document.addEventListener('input', hitungUlang);
+  document.addEventListener('change', hitungUlang);
+  document.addEventListener('focusout', function (e) {
+    if (e.target.id === 'subtotal' || e.target.classList.contains('pesanan-orang')) {
+      rapikanRupiah(e.target);
+    }
+  });
+
+  $('tambah').addEventListener('click', function () {
+    tambahOrang().focus();
+    hitungUlang();
+  });
+
+  $('salin').addEventListener('click', function () {
+    if (!hasilTerakhir) return;
+    const teks = Patungan.teksSalin(hasilTerakhir);
+    const tombol = $('salin');
+    function selesai(berhasil) {
+      tombol.textContent = berhasil ? 'Tersalin, tinggal tempel di grup' : 'Gagal menyalin';
+      setTimeout(function () { tombol.textContent = 'Salin hasil'; }, 2000);
+    }
+    function cadangan() {
+      const ta = document.createElement('textarea');
+      ta.value = teks;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      ta.remove();
+      selesai(ok);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(teks).then(function () { selesai(true); }, cadangan);
+    } else {
+      cadangan();
+    }
+  });
+
+  tambahOrang();
+  tambahOrang();
+  hitungUlang();
+})();
+</script>
+</body>
+</html>
